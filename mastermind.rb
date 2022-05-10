@@ -13,15 +13,17 @@ def create_array(repeat: false)
 end
 
 def guess_accuracy(guess, key)
-  acc = 
-    guess.each_index.map do |i|
-      if key[i] == guess[i]
-        2
-      elsif key.include?(guess[i])
-        1
-      else
-        0
-      end
+  guess.each_index.map do |i|
+    if key[i] == guess[i]
+      2
+    elsif key.include?(guess[i])
+      1
+    else
+      0
     end
-  acc.sort.reverse
+  end
+end
+
+def sorted_guesses(guess, key)
+  guess_accuracy(guess, key).sort.reverse
 end
