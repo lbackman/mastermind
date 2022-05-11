@@ -51,19 +51,19 @@ module Mastermind
     append_zeros(final)
   end
 
-  def make_guess
-    puts 'Make a guess (four numbers from 1 - 6).'
+  def make_sequence
+    puts 'Make a sequence (four numbers from 1 - 6).'
     guess = gets.chomp.split(' ').map(&:to_i)
     if guess.size == 4
       if guess.all? { |val| (1..6).include?(val) }
         guess
       else
-        puts 'Please, only guess values between 1 and 6.'
-        make_guess
+        puts 'Please, only give values between 1 and 6.'
+        make_sequence
       end
     else
-      puts 'Please, give exactly four numbers in your guess.'
-      make_guess
+      puts 'Please, give exactly four numbers in your sequence.'
+      make_sequence
     end
   end
 end
