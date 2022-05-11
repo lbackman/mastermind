@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
+# This module contains all mastermind methods
 module Mastermind
-  # Method For randomly generating sequences
   def create_array(repeat: false)
     options = (1..6).to_a
     result = []
@@ -13,7 +13,6 @@ module Mastermind
     result
   end
 
-  # Methods For checking guesses when there *ARE* repeats
   def check_exact(guess, key)
     final = []
     i = 0
@@ -28,7 +27,7 @@ module Mastermind
     end
     final
   end
-  
+
   def check_inexact(guess, key, final)
     guess.each_index do |i|
       if key.include?(guess[i])
@@ -38,12 +37,12 @@ module Mastermind
     end
     final
   end
-  
+
   def append_zeros(final)
     (4 - final.size).times { final << 0 }
     final
   end
-  
+
   def check_guesses(guess, key)
     temp_guess = guess[0, 4]
     temp_key = key[0, 4]
@@ -51,8 +50,25 @@ module Mastermind
     final = check_inexact(temp_guess, temp_key, partial)
     append_zeros(final)
   end
+
+  def make_guess
+    puts 'Make a guess (four numbers from 1 - 6).'
+    guess = gets.chomp.split(' ').map(&:to_i)
+    if guess.size == 4
+      if guess.all? { |val| (1..6).include?(val) }
+        guess
+      else
+        puts 'Please, only guess values between 1 and 6.'
+        make_guess
+      end
+    else
+      puts 'Please, give exactly four numbers in your guess.'
+      make_guess
+    end
+  end
 end
 
+# This class makes players
 class Player
   def initialize(role)
     @role = role
