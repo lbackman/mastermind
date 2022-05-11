@@ -45,9 +45,9 @@ end
 
 def check_inexact(guess, key, final)
   guess.each_index do |i|
-    if key.include?(guess[-(i + 1)])
+    if key.include?(guess[i])
       final << 1
-      key.delete_at(key.index(guess[-(i + 1)]))
+      key.delete_at(key.index(guess[i]))
     end
   end
   final
