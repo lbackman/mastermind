@@ -66,14 +66,41 @@ module Mastermind
       make_sequence
     end
   end
+
+  def all_guesses_list
+    final = add_one_to_el.map { |n| num_to_arr(n) }
+    final
+  end
+
+  def add_one_to_el
+    a = base_6_array
+    new_a = a.map(&:to_i).map { |el| el += 1111}.map(&:to_s)
+    new_a
+  end
+
+  def base_6_array
+    a = (0..1295).to_a.map { |num| num.to_s(6)}
+    new_a = a.map do |el|
+      while el.length < 4
+        el.prepend('0')
+      end
+    end
+    a
+  end
+
+  def num_to_arr(num)
+    num.to_s.split('').map(&:to_i)
+  end
 end
 
 # This class makes players
 class Player
   attr_reader :role
+  attr_accessor :turns
 
   def initialize(role)
     @role = role
+    @turns = 0
   end
 end
 
@@ -82,6 +109,7 @@ class Game
   include Mastermind
 
   @@CHECK = [2, 2, 2, 2]
+  @@FIRST_GUESS = [1, 1, 2, 2]
 
   def initialize(player1, player2, repeat = false)
     @player1 = player1
@@ -95,11 +123,14 @@ class Game
       puts "Answer key: #{@key}"
       start_guessing
     else
-      start_setting
+      @list = self.all_guesses_list
+      @key = self.make_sequence
+      @turns = 0
+      guessing_algorithm(@@FIRST_GUESS, @key)
     end
   end
 
-  private
+  # private
 
   def start_guessing
     @guess = self.make_sequence
@@ -111,9 +142,22 @@ class Game
       start_guessing
     end
   end
+
+  def guessing_algorithm(guess, key)
+    puts "Guess: #{guess}"
+    guess_array = check_guesses(guess, key)
+    if guess_array == @@CHECK
+      puts "#{guess_array}: Congrats, you won in #{@turns + 1} rounds!"
+    else
+      @turns += 1
+      puts "Your guess accuracy: #{guess_array}"
+      @list = @list.filter { |el| check_guesses(guess, el) != guess_array }
+      guessing_algorithm(@list.first, key)
+    end
+  end
 end
 
-p1 = Player.new('guesser')
-p2 = Player.new('setter')
+p1 = Player.new('setter')
+p2 = Player.new('guesser')
 mm = Game.new(p1, p2, true)
 mm.start_game
