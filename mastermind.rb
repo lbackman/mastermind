@@ -2,7 +2,7 @@
 
 # This module contains all mastermind methods
 module Mastermind
-  def create_array(repeat: false)
+  def create_array(repeat = false)
     options = (1..6).to_a
     result = []
     4.times do
@@ -70,7 +70,50 @@ end
 
 # This class makes players
 class Player
+  attr_reader :role
+
   def initialize(role)
     @role = role
   end
 end
+
+# Instantiates a new game
+class Game
+  include Mastermind
+
+  @@CHECK = [2, 2, 2, 2]
+
+  def initialize(player1, player2, repeat = false)
+    @player1 = player1
+    @player2 = player2
+    @repeat = repeat
+  end
+
+  def start_game
+    if @player1.role == 'guesser'
+      @key = self.create_array(@repeat)
+      puts "Answer key: #{@key}"
+      start_guessing
+    else
+      start_setting
+    end
+  end
+
+  private
+
+  def start_guessing
+    @guess = self.make_sequence
+    guess_array = check_guesses(@guess, @key)
+    if guess_array == @@CHECK
+      puts "#{guess_array}: Congrats, you won!"
+    else
+      puts "Your guess accuracy: #{guess_array}"
+      start_guessing
+    end
+  end
+end
+
+p1 = Player.new('guesser')
+p2 = Player.new('setter')
+mm = Game.new(p1, p2, true)
+mm.start_game
