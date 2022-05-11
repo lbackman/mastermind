@@ -96,11 +96,9 @@ end
 # This class makes players
 class Player
   attr_reader :role
-  attr_accessor :turns
 
   def initialize(role)
     @role = role
-    @turns = 0
   end
 end
 
@@ -109,7 +107,6 @@ class Game
   include Mastermind
 
   @@CHECK = [2, 2, 2, 2]
-  @@FIRST_GUESS = [1, 1, 2, 2]
 
   def initialize(player1, player2, repeat = false)
     @player1 = player1
@@ -126,7 +123,7 @@ class Game
       @list = self.all_guesses_list
       @key = self.make_sequence
       @turns = 0
-      guessing_algorithm(@@FIRST_GUESS, @key)
+      guessing_algorithm(@list.sample, @key)
     end
   end
 
@@ -147,12 +144,14 @@ class Game
     puts "Guess: #{guess}"
     guess_array = check_guesses(guess, key)
     if guess_array == @@CHECK
-      puts "#{guess_array}: Congrats, you won in #{@turns + 1} rounds!"
+      puts "#{guess_array}: Computer wins in #{@turns + 1} rounds!"
     else
       @turns += 1
-      puts "Your guess accuracy: #{guess_array}"
-      @list = @list.filter { |el| check_guesses(guess, el) != guess_array }
-      guessing_algorithm(@list.first, key)
+      puts "Computer's accuracy: #{guess_array}"
+      @list = @list.filter { |el| check_guesses(guess, el) == guess_array }
+      @list.delete(guess)
+      sleep 2
+      guessing_algorithm(@list.sample, key)
     end
   end
 end
