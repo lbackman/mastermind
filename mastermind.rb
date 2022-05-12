@@ -240,8 +240,7 @@ module Mastermind
 end
 
 # TODO: 
-# - give player ability to choose between setting and guessing
-# - implement points and rounds
+# - Fix points system!
 
 include Mastermind
 
