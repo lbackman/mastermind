@@ -169,10 +169,6 @@ module Mastermind
       end
     end
 
-    # def award_points
-    #   @game.opponent.points += self.turns
-    # end
-
     def to_s
       "Human player"
     end
@@ -217,10 +213,6 @@ module Mastermind
         guess_sequence(@list.sample, key)
       end
     end
-
-    # def award_points
-    #   @game.opponent.points += self.turns
-    # end
 
     def all_guesses_list
       final = self.add_one_to_el.map { |n| self.num_to_arr(n) }
