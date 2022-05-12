@@ -4,25 +4,34 @@ module Mastermind
 
   class Game
   
-    @@CHECK = [2, 2, 2, 2]
-  
-    def initialize(player1, player2, repeat = false)
+    attr_reader :current_player_id, :repeat
+
+    def initialize(player1, player2, rounds, repeat = false)
       @current_player_id = 0
       @players = [player1.new(self), player2.new(self)]
+      @rounds = rounds
       @repeat = repeat
       puts "#{current_player} goes first."
     end
   
     def start_game
-      if @player1.role == 'guesser'
-        @key = self.create_array(@repeat)
-        puts "Answer key: #{@key}"
-        start_guessing
+      (2 * @rounds).times do
+        puts "Create a key for the #{current_player} to crack"
+        key = self.opponent.create_sequence(@repeat)
+        first_guess = self.current_player.create_sequence(@repeat)
+        self.current_player.guess_sequence(first_guess, key)
+        if self.current_player.type == "Computer"
+          self.current_player.list = self.current_player.all_guesses_list
+        end
+        self.current_player.turns = 0
+        switch_players!
+      end
+      if self.current_player.type == "Computer"
+        puts "Final result: Computer #{self.current_player.points} - "\
+             "#{self.opponent.points} Human"
       else
-        @list = self.all_guesses_list
-        @key = self.make_sequence
-        @turns = 0
-        guessing_algorithm(@list.sample, @key)
+        puts "Final result: Human #{self.current_player.points} - "\
+             "#{self.opponent.points} Computer"
       end
     end
 
@@ -40,32 +49,6 @@ module Mastermind
  
     def opponent
       @players[other_player_id]
-    end
-  
-    def start_guessing
-      @guess = self.make_sequence
-      guess_array = check_guesses(@guess, @key)
-      if guess_array == @@CHECK
-        puts "#{guess_array}: Congrats, you won!"
-      else
-        puts "Your guess accuracy: #{guess_array}"
-        start_guessing
-      end
-    end
-  
-    def guessing_algorithm(guess, key)
-      puts "Guess: #{guess}"
-      guess_array = check_guesses(guess, key)
-      if guess_array == @@CHECK
-        puts "#{guess_array}: Computer wins in #{@turns + 1} rounds!"
-      else
-        @turns += 1
-        puts "Computer's accuracy: #{guess_array}"
-        @list = @list.select { |el| check_guesses(guess, el) == guess_array }
-        @list.delete(guess)
-        sleep 2
-        guessing_algorithm(@list.sample, key)
-      end
     end
 
     def create_array(repeat = false)
@@ -117,65 +100,44 @@ module Mastermind
       append_zeros(final)
     end
   
-    def make_sequence
-      puts 'Make a sequence (four numbers from 1 - 6).'
-      guess = gets.chomp.split(' ').map(&:to_i)
-      if guess.size == 4
-        if guess.all? { |val| (1..6).include?(val) }
-          guess
-        else
-          puts 'Please, only give values between 1 and 6.'
-          make_sequence
-        end
-      else
-        puts 'Please, give exactly four numbers in your sequence.'
-        make_sequence
-      end
-    end
-  
-    def all_guesses_list
-      final = add_one_to_el.map { |n| num_to_arr(n) }
-      final
-    end
-  
-    def add_one_to_el
-      a = (0..1295).to_a.map { |num| num.to_s(6) }
-      a.map { |el| el.prepend('0') while el.length < 4 }
-      a
-    end
-  
-    def base_6_array
-      a = (0..1295).to_a.map { |num| num.to_s(6)}
-      new_a = a.map do |el|
-        while el.length < 4
-          el.prepend('0')
-        end
-      end
-      a
-    end
-  
-    def num_to_arr(num)
-      num.to_s.split('').map(&:to_i)
-    end
   end
 
   class Player
-    attr_reader :role
+
+    @@CHECK = [2, 2, 2, 2]
+    attr_accessor :points
   
-    def initialize(game, role)
+    def initialize(game)
       @game = game
-      @role = role
     end
   end
 
   class HumanPlayer < Player
+    attr_accessor :turns, :points
+    attr_reader :type
 
-    def create_sequence
+    def initialize(game)
+      super(game)
+      @turns = 0
+      @points = 0
+      @type = "Human"
+    end
+
+    def create_sequence(repeat = false)
       puts 'Make a sequence (four numbers from 1 - 6).'
       sequence = gets.chomp.split(' ').map(&:to_i)
       if sequence.size == 4
         if sequence.all? { |val| (1..6).include?(val) }
-          sequence
+          if repeat
+            sequence
+          else
+            if sequence.uniq == sequence
+              sequence
+            else
+              puts 'Please no duplicate values.'
+              create_sequence
+            end
+          end
         else
           puts 'Please, only give values between 1 and 6.'
           create_sequence
@@ -185,9 +147,38 @@ module Mastermind
         create_sequence
       end
     end
+
+    def guess_sequence(guess, key)
+      guess_array = @game.check_guesses(guess, key)
+      if guess_array == @@CHECK
+        puts "#{guess_array}: Congrats, you won in #{@turns + 1} turns!"
+      else
+        @turns += 1
+        puts "Your guess accuracy: #{guess_array}"
+        new_guess = create_sequence(@game.repeat)
+        guess_sequence(new_guess, key)
+      end
+      @game.opponent.points += @turns
+    end
+
+    def to_s
+      "Human player"
+    end
+
   end
 
-  class ComputerPlayer
+  class ComputerPlayer < Player
+    attr_accessor :turns, :points, :list
+    attr_reader :type
+
+    def initialize(game)
+      super(game)
+      @turns = 0
+      @points = 0
+      @type = "Computer"
+      @list = self.all_guesses_list
+    end
+
     def create_sequence(repeat = false)
       options = (1..6).to_a
       result = []
@@ -196,10 +187,52 @@ module Mastermind
         result << rand
         options.delete(rand) unless repeat
       end
+      p result
       result
     end
-  end
+
+    def guess_sequence(guess, key)
+      puts "Guess: #{guess}"
+      guess_array = @game.check_guesses(guess, key)
+      if guess_array == @@CHECK
+        puts "#{guess_array}: Computer wins in #{@turns + 1} rounds!"
+      else
+        @turns += 1
+        puts "Computer's accuracy: #{guess_array}"
+        @list = @list.select { |el| @game.check_guesses(guess, el) == guess_array }
+        # @list.delete(guess)
+        # sleep 2
+        guess_sequence(@list.sample, key)
+      end
+      @game.opponent.points += @turns
+    end
+
+    def all_guesses_list
+      final = self.add_one_to_el.map { |n| self.num_to_arr(n) }
+      final
+    end
   
+    def add_one_to_el
+      a = self.base_6_array
+      new_a = a.map(&:to_i).map { |el| el += 1111}.map(&:to_s)
+      new_a
+    end
+  
+    def base_6_array
+      a = (0..1295).to_a.map { |num| num.to_s(6)}
+      new_a = a.map { |el| el.prepend('0') while el.length < 4 }
+      a
+    end
+  
+    def num_to_arr(num)
+      num.to_s.split('').map(&:to_i)
+    end
+
+    def to_s
+      "Computer#{@game.current_player_id}"
+    end
+  end
+
 end
 
 # TODO: 
@@ -208,7 +241,5 @@ end
 
 include Mastermind
 
-p1 = Player.new('setter')
-p2 = Player.new('guesser')
-mm = Game.new(p1, p2, true)
-mm.start_game
+players_with_human = [HumanPlayer, ComputerPlayer].shuffle
+Game.new(*players_with_human, 2, true).start_game
