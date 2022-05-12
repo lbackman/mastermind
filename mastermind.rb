@@ -23,7 +23,7 @@ module Mastermind
         if self.current_player.type == "Computer"
           self.current_player.list = self.current_player.all_guesses_list
         end
-        self.current_player.award_points
+        self.award_points
         self.current_player.turns = 0
         switch_players!
       end
@@ -38,6 +38,10 @@ module Mastermind
         puts "Final result: Human #{self.current_player.points} - "\
              "#{self.opponent.points} Computer"
       end
+    end
+
+    def award_points
+      self.opponent.points += self.current_player.turns
     end
 
     def other_player_id
@@ -165,9 +169,9 @@ module Mastermind
       end
     end
 
-    def award_points
-      @game.opponent.points += self.turns
-    end
+    # def award_points
+    #   @game.opponent.points += self.turns
+    # end
 
     def to_s
       "Human player"
@@ -214,9 +218,9 @@ module Mastermind
       end
     end
 
-    def award_points
-      @game.opponent.points += self.turns
-    end
+    # def award_points
+    #   @game.opponent.points += self.turns
+    # end
 
     def all_guesses_list
       final = self.add_one_to_el.map { |n| self.num_to_arr(n) }
