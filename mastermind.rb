@@ -73,9 +73,9 @@ module Mastermind
   end
 
   def add_one_to_el
-    a = base_6_array
-    new_a = a.map(&:to_i).map { |el| el += 1111}.map(&:to_s)
-    new_a
+    a = (0..1295).to_a.map { |num| num.to_s(6) }
+    a.map { |el| el.prepend('0') while el.length < 4 }
+    a
   end
 
   def base_6_array
@@ -148,13 +148,17 @@ class Game
     else
       @turns += 1
       puts "Computer's accuracy: #{guess_array}"
-      @list = @list.filter { |el| check_guesses(guess, el) == guess_array }
+      @list = @list.select { |el| check_guesses(guess, el) == guess_array }
       @list.delete(guess)
       sleep 2
       guessing_algorithm(@list.sample, key)
     end
   end
 end
+
+# TODO: 
+# - give player ability to choose between setting and guessing
+# - implement points and rounds
 
 p1 = Player.new('setter')
 p2 = Player.new('guesser')
