@@ -23,6 +23,7 @@ module Mastermind
         if self.current_player.type == "Computer"
           self.current_player.list = self.current_player.all_guesses_list
         end
+        self.current_player.award_points
         self.current_player.turns = 0
         switch_players!
       end
@@ -31,8 +32,8 @@ module Mastermind
 
     def end_game
       if self.current_player.type == "Computer"
-        puts "Final result: Computer #{self.current_player.points} - "\
-             "#{self.opponent.points} Human"
+        puts "Final result: Human #{self.opponent.points} - "\
+             "#{self.current_player.points} Computer"
       else
         puts "Final result: Human #{self.current_player.points} - "\
              "#{self.opponent.points} Computer"
@@ -162,7 +163,10 @@ module Mastermind
         new_guess = create_sequence(@game.repeat)
         guess_sequence(new_guess, key)
       end
-      @game.opponent.points += @turns
+    end
+
+    def award_points
+      @game.opponent.points += self.turns
     end
 
     def to_s
@@ -208,7 +212,10 @@ module Mastermind
         # sleep 2
         guess_sequence(@list.sample, key)
       end
-      @game.opponent.points += @turns
+    end
+
+    def award_points
+      @game.opponent.points += self.turns
     end
 
     def all_guesses_list
@@ -238,9 +245,6 @@ module Mastermind
   end
 
 end
-
-# TODO: 
-# - Fix points system!
 
 include Mastermind
 
