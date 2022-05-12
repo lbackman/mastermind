@@ -26,6 +26,10 @@ module Mastermind
         self.current_player.turns = 0
         switch_players!
       end
+    end_game
+    end
+
+    def end_game
       if self.current_player.type == "Computer"
         puts "Final result: Computer #{self.current_player.points} - "\
              "#{self.opponent.points} Human"
