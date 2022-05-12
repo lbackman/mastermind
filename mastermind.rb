@@ -3,14 +3,14 @@
 module Mastermind
 
   class Game
-    include Mastermind
   
     @@CHECK = [2, 2, 2, 2]
   
     def initialize(player1, player2, repeat = false)
-      @player1 = player1
-      @player2 = player2
+      @current_player_id = 0
+      @players = [player1.new(self), player2.new(self)]
       @repeat = repeat
+      puts "#{current_player} goes first."
     end
   
     def start_game
@@ -25,8 +25,22 @@ module Mastermind
         guessing_algorithm(@list.sample, @key)
       end
     end
-  
-    # private
+
+    def other_player_id
+      1 - @current_player_id
+    end
+ 
+    def switch_players!
+      @current_player_id = other_player_id
+    end
+ 
+    def current_player
+      @players[current_player_id]
+    end
+ 
+    def opponent
+      @players[other_player_id]
+    end
   
     def start_guessing
       @guess = self.make_sequence
@@ -148,10 +162,44 @@ module Mastermind
   class Player
     attr_reader :role
   
-    def initialize(role)
+    def initialize(game, role)
+      @game = game
       @role = role
     end
   end
+
+  class HumanPlayer < Player
+
+    def create_sequence
+      puts 'Make a sequence (four numbers from 1 - 6).'
+      sequence = gets.chomp.split(' ').map(&:to_i)
+      if sequence.size == 4
+        if sequence.all? { |val| (1..6).include?(val) }
+          sequence
+        else
+          puts 'Please, only give values between 1 and 6.'
+          create_sequence
+        end
+      else
+        puts 'Please, give exactly four numbers in your sequence.'
+        create_sequence
+      end
+    end
+  end
+
+  class ComputerPlayer
+    def create_sequence(repeat = false)
+      options = (1..6).to_a
+      result = []
+      4.times do
+        rand = options.sample
+        result << rand
+        options.delete(rand) unless repeat
+      end
+      result
+    end
+  end
+  
 end
 
 # TODO: 
