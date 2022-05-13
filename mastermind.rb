@@ -215,7 +215,7 @@ module Mastermind
   
     def add_one_to_el
       a = self.base_6_array
-      new_a = a.map(&:to_i).map { |el| el += 1111}.map(&:to_s)
+      new_a = a.map(&:to_i).map { |el| el + 1111}.map(&:to_s)
       new_a
     end
   
@@ -267,7 +267,7 @@ def choose_rounds
   puts 'How many rounds do you want to play? (1-5)'
   input = gets.to_i
   return input if (1..5).include?(input)
-  
+
   puts "That's an invalid choice, please try again"
   choose_rounds
 end
