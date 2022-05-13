@@ -16,18 +16,22 @@ module Mastermind
   
     def start_game
       (2 * @rounds).times do
-        puts "Create a key for the #{current_player} to crack"
-        key = self.opponent.create_sequence(@repeat)
-        first_guess = self.current_player.create_sequence(@repeat)
-        self.current_player.guess_sequence(first_guess, key)
-        if self.current_player.type == "Computer"
-          self.current_player.list = self.current_player.all_guesses_list
-        end
+        play_round
         self.award_points
         self.current_player.turns = 0
         switch_players!
       end
     end_game
+    end
+
+    def play_round
+      puts "Create a key for #{current_player} to crack"
+      key = self.opponent.create_sequence(@repeat)
+      first_guess = self.current_player.create_sequence(@repeat)
+      self.current_player.guess_sequence(first_guess, key)
+      if self.current_player.type == "Computer"
+        self.current_player.list = self.current_player.all_guesses_list
+      end
     end
 
     def end_game
