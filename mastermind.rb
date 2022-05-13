@@ -207,13 +207,13 @@ module Mastermind
       puts "Guess: #{guess}"
       guess_array = @game.check_guesses(guess, key)
       if guess_array == @@CHECK
-        puts "#{guess_array}: #{self} guessed correctly #{@turns + 1} turns!"
+        puts "#{guess_array}: #{self} guessed correctly in #{@turns + 1} turns!"
       else
         @turns += 1
         puts "#{self}'s accuracy: #{guess_array}"
         @list.select! { |el| @game.check_guesses(guess, el) == guess_array }
         @list.delete(guess)
-        # sleep 2
+        sleep 2
         guess_sequence(@list.sample, key)
       end
     end
@@ -248,5 +248,38 @@ end
 
 include Mastermind
 
-players_with_human = [HumanPlayer, ComputerPlayer].shuffle
-Game.new(*players_with_human, 2, true).start_game
+def start_playing
+  rounds = choose_rounds
+  order = choose_order
+  repeat = include_repeat?
+  Game.new(*order, rounds, repeat).start_game
+end
+
+def include_repeat?
+  puts "Do you want to include repeats in your codes? (y/n)"
+  input = gets.chomp
+  return true if input == 'y'
+  false
+end
+
+def choose_order
+  puts "Do you want to start as the setter or as the guesser? (s/g)"
+  input = gets.chomp
+  return [HumanPlayer, ComputerPlayer] if input == 'g'
+  return [ComputerPlayer, HumanPlayer] if input == 's'
+  puts "Invalid input"
+  choose_order
+end
+
+def choose_rounds
+  puts "How many rounds do you want to play? (1-5)"
+  input = gets.to_i
+  return input if (1..5).include?(input)
+  puts "That's an invalid choise, please try again"
+  choose_rounds
+end
+
+start_playing
+
+# players_with_human = [HumanPlayer, ComputerPlayer].shuffle
+# Game.new(*players_with_human, 2, true).start_game
