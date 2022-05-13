@@ -207,10 +207,10 @@ module Mastermind
       puts "Guess: #{guess}"
       guess_array = @game.check_guesses(guess, key)
       if guess_array == @@CHECK
-        puts "#{guess_array}: Computer wins in #{@turns + 1} rounds!"
+        puts "#{guess_array}: #{self} wins in #{@turns + 1} rounds!"
       else
         @turns += 1
-        puts "Computer's accuracy: #{guess_array}"
+        puts "#{self}'s accuracy: #{guess_array}"
         @list.select! { |el| @game.check_guesses(guess, el) == guess_array }
         @list.delete(guess)
         # sleep 2
@@ -240,7 +240,7 @@ module Mastermind
     end
 
     def to_s
-      "Computer#{@game.current_player_id}"
+      "Computer #{@game.current_player_id}"
     end
   end
 
