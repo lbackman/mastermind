@@ -6,7 +6,7 @@ module Mastermind
   
     attr_reader :current_player_id, :repeat
 
-    def initialize(player1, player2, rounds, repeat = false)
+    def initialize(player1, player2, rounds, repeat)
       @current_player_id = 0
       @players = [player1.new(self), player2.new(self)]
       @rounds = rounds
@@ -64,7 +64,7 @@ module Mastermind
       @players[other_player_id]
     end
 
-    def create_array(repeat = false)
+    def create_array(repeat)
       options = (1..6).to_a
       result = []
       4.times do
@@ -136,7 +136,7 @@ module Mastermind
       @type = "Human"
     end
 
-    def create_sequence(repeat = false)
+    def create_sequence(repeat)
       puts 'Make a sequence (four numbers from 1 - 6).'
       sequence = gets.chomp.split(' ').map(&:to_i)
       if sequence.size == 4
@@ -148,16 +148,16 @@ module Mastermind
               sequence
             else
               puts 'Please no duplicate values.'
-              create_sequence
+              create_sequence(repeat)
             end
           end
         else
           puts 'Please, only give values between 1 and 6.'
-          create_sequence
+          create_sequence(repeat)
         end
       else
         puts 'Please, give exactly four numbers in your sequence.'
-        create_sequence
+        create_sequence(repeat)
       end
     end
 
@@ -191,7 +191,7 @@ module Mastermind
       @list = self.all_guesses_list
     end
 
-    def create_sequence(repeat = false)
+    def create_sequence(repeat)
       options = (1..6).to_a
       result = []
       4.times do
