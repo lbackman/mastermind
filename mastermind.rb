@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 module Mastermind
-
   class Game
-  
+
     attr_reader :current_player_id, :repeat
 
     def initialize(player1, player2, rounds, repeat)
@@ -13,7 +12,7 @@ module Mastermind
       @repeat = repeat
       puts "#{current_player} goes first."
     end
-  
+
     def start_game
       (2 * @rounds).times do
         play_round
@@ -51,19 +50,19 @@ module Mastermind
     def other_player_id
       1 - @current_player_id
     end
- 
+
     def switch_players!
       @current_player_id = other_player_id
     end
- 
+
     def current_player
       @players[current_player_id]
     end
- 
+
     def opponent
       @players[other_player_id]
     end
-  
+
     def check_exact(guess, key)
       final = []
       i = 0
@@ -78,7 +77,7 @@ module Mastermind
       end
       final
     end
-  
+
     def check_inexact(guess, key, final)
       guess.each_index do |i|
         if key.include?(guess[i])
@@ -88,12 +87,12 @@ module Mastermind
       end
       final
     end
-  
+
     def append_zeros(final)
       (4 - final.size).times { final << 0 }
       final
     end
-  
+
     def check_guesses(guess, key)
       temp_guess = guess[0, 4]
       temp_key = key[0, 4]
@@ -101,14 +100,14 @@ module Mastermind
       final = check_inexact(temp_guess, temp_key, partial)
       append_zeros(final)
     end
-  
+
   end
 
   class Player
 
     @@CHECK = [2, 2, 2, 2]
     attr_accessor :points
-  
+
     def initialize(game)
       @game = game
     end
