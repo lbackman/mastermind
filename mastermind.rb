@@ -118,7 +118,7 @@ module Mastermind
       super(game)
       @turns = 0
       @points = 0
-      @type = "Human"
+      @type = 'Human'
     end
 
     def create_sequence(repeat)
@@ -171,7 +171,7 @@ module Mastermind
       super(game)
       @turns = 0
       @points = 0
-      @type = "Computer"
+      @type = 'Computer'
       @list = all_guesses_list
     end
 
