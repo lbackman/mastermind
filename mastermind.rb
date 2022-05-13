@@ -2,7 +2,6 @@
 
 module Mastermind
   class Game
-
     attr_reader :current_player_id, :repeat
 
     def initialize(player1, player2, rounds, repeat)
@@ -16,35 +15,35 @@ module Mastermind
     def start_game
       (2 * @rounds).times do
         play_round
-        self.award_points
-        self.current_player.turns = 0
+        award_points
+        current_player.turns = 0
         switch_players!
       end
-    end_game
+      end_game
     end
 
     def play_round
       puts "Create a key for #{current_player} to crack"
-      key = self.opponent.create_sequence(@repeat)
-      first_guess = self.current_player.create_sequence(@repeat)
-      self.current_player.guess_sequence(first_guess, key)
-      if self.current_player.type == "Computer"
-        self.current_player.list = self.current_player.all_guesses_list
+      key = opponent.create_sequence(@repeat)
+      first_guess = current_player.create_sequence(@repeat)
+      current_player.guess_sequence(first_guess, key)
+      if current_player.type == 'Computer'
+        current_player.list = current_player.all_guesses_list
       end
     end
 
     def end_game
-      if self.current_player.type == "Computer"
-        puts "Final result: Human #{self.opponent.points} - "\
-             "#{self.current_player.points} Computer"
+      if current_player.type == 'Computer'
+        puts "Final result: Human #{opponent.points} - "\
+             "#{current_player.points} Computer"
       else
-        puts "Final result: Human #{self.current_player.points} - "\
-             "#{self.opponent.points} Computer"
+        puts "Final result: Human #{current_player.points} - "\
+             "#{opponent.points} Computer"
       end
     end
 
     def award_points
-      self.opponent.points += self.current_player.turns
+      opponent.points += current_player.turns
     end
 
     def other_player_id
@@ -100,11 +99,9 @@ module Mastermind
       final = check_inexact(temp_guess, temp_key, partial)
       append_zeros(final)
     end
-
   end
 
   class Player
-
     @@CHECK = [2, 2, 2, 2]
     attr_accessor :points
 
@@ -162,9 +159,8 @@ module Mastermind
     end
 
     def to_s
-      "the Human Player"
+      'the Human Player'
     end
-
   end
 
   class ComputerPlayer < Player
@@ -176,7 +172,7 @@ module Mastermind
       @turns = 0
       @points = 0
       @type = "Computer"
-      @list = self.all_guesses_list
+      @list = all_guesses_list
     end
 
     def create_sequence(repeat)
@@ -208,13 +204,13 @@ module Mastermind
     end
 
     def all_guesses_list
-      final = self.add_one_to_el.map { |n| self.num_to_arr(n) }
+      final = add_one_to_el.map { |n| num_to_arr(n) }
       final
     end
 
     def add_one_to_el
-      a = self.base_6_array
-      new_a = a.map(&:to_i).map { |el| el + 1111}.map(&:to_s)
+      a = base_6_array
+      new_a = a.map(&:to_i).map { |el| el + 1111 }.map(&:to_s)
       new_a
     end
 
@@ -232,7 +228,6 @@ module Mastermind
       "Computer #{@game.current_player_id}"
     end
   end
-
 end
 
 include Mastermind
@@ -258,7 +253,7 @@ def choose_order
   return [HumanPlayer, ComputerPlayer] if input == 'g'
   return [ComputerPlayer, HumanPlayer] if input == 's'
 
-  puts "Invalid input"
+  puts 'Invalid input'
   choose_order
 end
 
