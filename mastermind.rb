@@ -188,7 +188,8 @@ module Mastermind
         result << rand
         options.delete(rand) unless repeat
       end
-      p result
+      # uncomment line below if needed for troubleshooting
+      # p result
       result
     end
 
@@ -245,26 +246,29 @@ def start_playing
 end
 
 def include_repeat?
-  puts "Do you want to include repeats in your codes? (y/n)"
+  puts 'Do you want to include repeats in your codes? (y/n)'
   input = gets.chomp
   return true if input == 'y'
+
   false
 end
 
 def choose_order
-  puts "Do you want to start as the setter or as the guesser? (s/g)"
+  puts 'Do you want to start as the setter or as the guesser? (s/g)'
   input = gets.chomp
   return [HumanPlayer, ComputerPlayer] if input == 'g'
   return [ComputerPlayer, HumanPlayer] if input == 's'
+
   puts "Invalid input"
   choose_order
 end
 
 def choose_rounds
-  puts "How many rounds do you want to play? (1-5)"
+  puts 'How many rounds do you want to play? (1-5)'
   input = gets.to_i
   return input if (1..5).include?(input)
-  puts "That's an invalid choise, please try again"
+  
+  puts "That's an invalid choice, please try again"
   choose_rounds
 end
 
