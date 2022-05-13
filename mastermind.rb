@@ -211,8 +211,8 @@ module Mastermind
       else
         @turns += 1
         puts "Computer's accuracy: #{guess_array}"
-        @list = @list.select { |el| @game.check_guesses(guess, el) == guess_array }
-        # @list.delete(guess)
+        @list.select! { |el| @game.check_guesses(guess, el) == guess_array }
+        @list.delete(guess)
         # sleep 2
         guess_sequence(@list.sample, key)
       end
