@@ -212,19 +212,19 @@ module Mastermind
       final = self.add_one_to_el.map { |n| self.num_to_arr(n) }
       final
     end
-  
+
     def add_one_to_el
       a = self.base_6_array
       new_a = a.map(&:to_i).map { |el| el + 1111}.map(&:to_s)
       new_a
     end
-  
+
     def base_6_array
-      a = (0..1295).to_a.map { |num| num.to_s(6)}
-      new_a = a.map { |el| el.prepend('0') while el.length < 4 }
+      a = (0..1295).to_a.map { |num| num.to_s(6) }
+      a.map { |el| el.prepend('0') while el.length < 4 }
       a
     end
-  
+
     def num_to_arr(num)
       num.to_s.split('').map(&:to_i)
     end
