@@ -164,7 +164,7 @@ module Mastermind
     def guess_sequence(guess, key)
       guess_array = @game.check_guesses(guess, key)
       if guess_array == @@CHECK
-        puts "#{guess_array}: Congrats, you won in #{@turns + 1} turns!"
+        puts "#{guess_array}: You guessed correctly in #{@turns + 1} turns!"
       else
         @turns += 1
         puts "Your guess accuracy: #{guess_array}"
@@ -174,7 +174,7 @@ module Mastermind
     end
 
     def to_s
-      "Human player"
+      "the Human Player"
     end
 
   end
@@ -207,7 +207,7 @@ module Mastermind
       puts "Guess: #{guess}"
       guess_array = @game.check_guesses(guess, key)
       if guess_array == @@CHECK
-        puts "#{guess_array}: #{self} wins in #{@turns + 1} rounds!"
+        puts "#{guess_array}: #{self} guessed correctly #{@turns + 1} turns!"
       else
         @turns += 1
         puts "#{self}'s accuracy: #{guess_array}"
