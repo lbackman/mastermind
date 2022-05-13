@@ -63,17 +63,6 @@ module Mastermind
     def opponent
       @players[other_player_id]
     end
-
-    def create_array(repeat)
-      options = (1..6).to_a
-      result = []
-      4.times do
-        rand = options.sample
-        result << rand
-        options.delete(rand) unless repeat
-      end
-      result
-    end
   
     def check_exact(guess, key)
       final = []
