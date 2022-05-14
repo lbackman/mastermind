@@ -184,7 +184,7 @@ module Mastermind
         options.delete(rand) unless repeat
       end
       # uncomment line below if needed for troubleshooting
-      # p result
+      p result
       result
     end
 
@@ -198,20 +198,18 @@ module Mastermind
         puts "#{self}'s accuracy: #{guess_array}"
         @list.select! { |el| @game.check_guesses(guess, el) == guess_array }
         @list.delete(guess)
-        sleep 2
+        # sleep 2
         guess_sequence(@list.sample, key)
       end
     end
 
     def all_guesses_list
-      final = add_one_to_el.map { |n| num_to_arr(n) }
-      final
+      add_one_to_el.map { |n| num_to_arr(n) }
     end
 
     def add_one_to_el
       a = base_6_array
-      new_a = a.map(&:to_i).map { |el| el + 1111 }.map(&:to_s)
-      new_a
+      a.map(&:to_i).map { |el| el + 1111 }.map(&:to_s)
     end
 
     def base_6_array
