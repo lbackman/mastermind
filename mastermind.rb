@@ -123,27 +123,17 @@ module Mastermind
 
     def create_sequence(repeat)
       puts 'Make a sequence (four numbers from 1 - 6).'
-      sequence = gets.chomp.split(' ').map(&:to_i)
-      if sequence.size == 4
-        if sequence.all? { |val| (1..6).include?(val) }
-          if repeat
-            sequence
-          else
-            if sequence.uniq == sequence
-              sequence
-            else
-              puts 'Please no duplicate values.'
-              create_sequence(repeat)
-            end
-          end
-        else
-          puts 'Please, only give values between 1 and 6.'
-          create_sequence(repeat)
-        end
-      else
+      seq = gets.chomp.split(' ').map(&:to_i)
+      if seq.size != 4
         puts 'Please, give exactly four numbers in your sequence.'
-        create_sequence(repeat)
+      elsif (seq.any? { |val| !(1..6).include?(val) })
+        puts 'Please, only give values between 1 and 6.'
+      elsif !repeat && seq.uniq != seq
+        puts 'Please no duplicate values.'
+      else
+        return seq
       end
+      create_sequence(repeat)
     end
 
     def guess_sequence(guess, key)
